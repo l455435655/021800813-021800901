@@ -58,6 +58,8 @@ def load_answer() -> dict:
     return answer
 
 def swap_num(board: list, position_1: tuple, position_2: tuple):
+    move_sound = pygame.mixer.Sound('./data/sound/move_1.wav')
+    move_sound.play()
     board[position_1[0]][position_1[1]]["num"], board[position_2[0]][position_2[1]]["num"] = \
         board[position_2[0]][position_2[1]]["num"], board[position_1[0]][position_1[1]]["num"]
 
@@ -193,10 +195,14 @@ def display_game_menu(screen, board):
 
 def play(screen, image_num: int):
     print("START NEW GAME!")
+
+    start_sound = pygame.mixer.Sound('./data/sound/start.wav')
+    start_sound.play()
+
     board = init_board(status=get_orign_status())
     clock = pygame.time.Clock()
     images = load_images(image_num=image_num)
-    bg_image = pygame.image.load('./data/image/background.jpg')
+    # bg_image = pygame.image.load('./data/image/background.jpg')
     answer = load_answer()
 
     print("orign_status:", get_board_status(board=board))
@@ -240,6 +246,9 @@ def play(screen, image_num: int):
                         step += 1
 
         if is_win(board=board):
+            win_sound = pygame.mixer.Sound('./data/sound/win.wav')
+            win_sound.play()
+
             screen.fill(BG_COLOR)
             # screen.blit(bg_image, (0, 0))
             display_images(screen=screen, board=board, images=images)
@@ -259,7 +268,6 @@ def play(screen, image_num: int):
         # screen.blit(bg_image, (0, 0))
         display_images(screen=screen, board=board, images=images)
         display_game_info(screen=screen, image_num=image_num, time_cost=time.time() - time_start, step=step, tips_cnt=tips_cnt)
-        ############################################################################################
 
         pygame.display.flip()
         clock.tick(FPS)

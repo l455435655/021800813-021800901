@@ -3,6 +3,7 @@ from huarong_puzele_game import *
 
 def main():
     pygame.init()
+    pygame.mixer.init()
     screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption(TITLE)
     menu_board = init_board('123456789')
