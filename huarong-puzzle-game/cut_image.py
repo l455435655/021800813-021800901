@@ -1,7 +1,7 @@
 from PIL import Image
 
 
-path = './data/image/'
+path = './data/image/3/'
 
 
 

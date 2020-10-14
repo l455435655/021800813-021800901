@@ -4,7 +4,6 @@ import json
 import random
 import time
 
-
 BG_COLOR = (245, 222, 179)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -27,6 +26,7 @@ def get_orign_status() -> str:
         answer = json.load(answer_file)
     return random.choice(list(answer))
 
+
 def init_board(status: str) -> list:
     board = [
         [{}, {}, {}, {}, {}],
@@ -42,14 +42,16 @@ def init_board(status: str) -> list:
             board[r][c].update({'num': status[index - 1], 'position': ((c - 1) * CELL_WIDTH, (r - 1) * CELL_HEIGHT)})
     return board
 
-def load_images(image_num: int) -> list:
+
+def load_images(image_type: int, image_num: int) -> list:
     images = []
     images.append(pygame.image.load('./data/image/white.jpg'))
     for i in range(1, 4):
         for j in range(1, 4):
-            image_path = './data/image/' +  str(image_num) + str(i) + str(j) + '.jpg'
+            image_path = './data/image/' + str(image_type) + '/' + str(image_num) + str(i) + str(j) + '.jpg'
             images.append(pygame.image.load(image_path))
     return images
+
 
 def load_answer() -> dict:
     answer_file_path = './data/answer/ans9.json'
@@ -57,11 +59,13 @@ def load_answer() -> dict:
         answer = json.load(answer_file)
     return answer
 
+
 def swap_num(board: list, position_1: tuple, position_2: tuple):
     move_sound = pygame.mixer.Sound('./data/sound/move_1.wav')
     move_sound.play()
     board[position_1[0]][position_1[1]]["num"], board[position_2[0]][position_2[1]]["num"] = \
         board[position_2[0]][position_2[1]]["num"], board[position_1[0]][position_1[1]]["num"]
+
 
 def show_board_info(board: list):
     for i in range(1, 4):
@@ -69,12 +73,14 @@ def show_board_info(board: list):
             print(board[i][j], end=' ')
         print('')
 
+
 def click_mouse(board, pos: tuple):
     for r in range(1, 4):
         for c in range(1, 4):
             if pos[0] in range(board[r][c]['position'][0], board[r][c]['position'][0] + CELL_WIDTH + 1) and \
                     pos[1] in range(board[r][c]['position'][1], board[r][c]['position'][1] + CELL_HEIGHT + 1):
                 return (r, c)
+
 
 def move_blank_image(board, pos: tuple) -> bool:
     if pos:
@@ -92,6 +98,7 @@ def move_blank_image(board, pos: tuple) -> bool:
                 swap_num(board=board, position_1=pos, position_2=(r, c))
                 return True
     return False
+
 
 def move_blank_image_by_keyboard(board, operation) -> bool:
     white_image_pos = get_white_image_pos(board=board)
@@ -124,6 +131,7 @@ def move_blank_image_by_keyboard(board, operation) -> bool:
             return True
     return False
 
+
 def is_win(board) -> bool:
     for i in range(1, 9):
         r = (i - 1) // 3 + 1
@@ -132,11 +140,13 @@ def is_win(board) -> bool:
             return False
     return True
 
+
 def get_white_image_pos(board: list) -> tuple:
     for r in range(1, 4):
         for c in range(1, 4):
             if board[r][c]['num'] == '0':
                 return (r, c)
+
 
 def get_board_status(board) -> str:
     status = ''
@@ -145,19 +155,19 @@ def get_board_status(board) -> str:
             status += board[r][c]['num']
     return status
 
+
 def display_images(screen, board: list, images: list):
     for r in range(1, 4):
         for c in range(1, 4):
-            # if board[r][c]['num'] == '0':
-            #     continue
             screen.blit(images[int(board[r][c]['num'])], board[r][c]['position'])
 
-def display_game_info(screen, image_num, time_cost, step: int, tips_cnt: int):
-    img = pygame.image.load('./data/image/' + str(image_num) + 's.jpg')
+
+def display_game_info(screen, image_type: int, image_num: int, time_cost: float, step: int, tips_cnt: int):
+    img = pygame.image.load('./data/image/{0}/{1}s.jpg'.format(image_type, image_num))
     my_font_1 = pygame.font.Font(FONT_FILE_PATH, 30)
     my_font_2 = pygame.font.Font(FONT_FILE_PATH, 20)
 
-    time_surface = my_font_1.render('时间: %s' %(time.strftime("%M:%S", time.localtime(time_cost))), True, BLACK)
+    time_surface = my_font_1.render('时间: %s' % (time.strftime("%M:%S", time.localtime(time_cost))), True, BLACK)
     step_surface = my_font_1.render('步数: %d' % (step), True, BLACK)
     tips_cnt_surface = my_font_1.render('提示: %d' % (tips_cnt), True, BLACK)
 
@@ -173,19 +183,20 @@ def display_game_info(screen, image_num, time_cost, step: int, tips_cnt: int):
     screen.blit(help_info_surface_2, (650, 525))
     screen.blit(help_info_surface_3, (650, 550))
 
+
 def display_game_over(screen):
     my_font = pygame.font.Font(FONT_FILE_PATH, 100)
     win_surface = my_font.render('你赢啦', True, (121, 205, 205))
     screen.blit(win_surface, (150, 250))
 
-def display_game_menu(screen, board):
+
+def display_game_menu(screen, board, image_type: int):
     images = []
     images.append(pygame.image.load('./data/image/white.jpg'))
     for i in range(1, 10):
-        image_path = './data/image/' + str(i) + "s.jpg"
+        image_path = './data/image/{0}/{1}s.jpg'.format(image_type, i)
         images.append(pygame.image.load(image_path))
     display_images(screen=screen, board=board, images=images)
-
 
     my_font = pygame.font.Font(FONT_FILE_PATH, 50)
     text_surface_1 = my_font.render('选择图片', True, BLACK)
@@ -193,7 +204,8 @@ def display_game_menu(screen, board):
     screen.blit(text_surface_1, (650, 250))
     screen.blit(text_surface_2, (650, 350))
 
-def play(screen, image_num: int):
+
+def play(screen, image_type: int, image_num: int):
     print("START NEW GAME!")
 
     start_sound = pygame.mixer.Sound('./data/sound/start.wav')
@@ -201,7 +213,7 @@ def play(screen, image_num: int):
 
     board = init_board(status=get_orign_status())
     clock = pygame.time.Clock()
-    images = load_images(image_num=image_num)
+    images = load_images(image_type=image_type, image_num=image_num)
     # bg_image = pygame.image.load('./data/image/background.jpg')
     answer = load_answer()
 
@@ -252,7 +264,8 @@ def play(screen, image_num: int):
             screen.fill(BG_COLOR)
             # screen.blit(bg_image, (0, 0))
             display_images(screen=screen, board=board, images=images)
-            display_game_info(screen=screen, image_num=image_num, time_cost=time.time() - time_start, step=step, tips_cnt=tips_cnt)
+            display_game_info(screen=screen, image_type=image_type, image_num=image_num,
+                              time_cost=time.time() - time_start, step=step, tips_cnt=tips_cnt)
             display_game_over(screen=screen)
             pygame.display.flip()
             time.sleep(2)
@@ -263,12 +276,11 @@ def play(screen, image_num: int):
                     elif event.type in (pygame.MOUSEBUTTONDOWN, pygame.KEYDOWN):
                         return
 
-
         screen.fill(BG_COLOR)
         # screen.blit(bg_image, (0, 0))
         display_images(screen=screen, board=board, images=images)
-        display_game_info(screen=screen, image_num=image_num, time_cost=time.time() - time_start, step=step, tips_cnt=tips_cnt)
+        display_game_info(screen=screen, image_type=image_type, image_num=image_num,
+                          time_cost=time.time() - time_start, step=step, tips_cnt=tips_cnt)
 
         pygame.display.flip()
         clock.tick(FPS)
-

@@ -7,6 +7,7 @@ def main():
     screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption(TITLE)
     menu_board = init_board('123456789')
+    image_type = random.randint(1, 3)
 
     while True:
         for event in pygame.event.get():
@@ -16,19 +17,22 @@ def main():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos = click_mouse(board=menu_board, pos= event.pos)
                 if pos:
-                    play(screen=screen, image_num=(pos[0] - 1) * 3 + pos[1])
+                    play(screen=screen, image_type=image_type, image_num=(pos[0] - 1) * 3 + pos[1])
+                    image_type = random.randint(1, 3)
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     sys.exit()
                 elif event.key in range(pygame.K_1, pygame.K_9 + 1):
-                    play(screen=screen, image_num=event.key - pygame.K_0)
+                    play(screen=screen, image_type=image_type, image_num=event.key - pygame.K_0)
+                    image_type = random.randint(1, 3)
                 elif event.key in range(pygame.K_KP1, pygame.K_KP9 + 1):
-                    play(screen=screen, image_num=event.key - pygame.K_KP0)
+                    play(screen=screen, image_type=image_type,  image_num=event.key - pygame.K_KP0)
+                    image_type = random.randint(1, 3)
 
         screen.fill(BG_COLOR)
         # screen.blit(bg_image, (0, 0))
-        display_game_menu(screen=screen, board=menu_board)
+        display_game_menu(screen=screen, board=menu_board, image_type=image_type)
         pygame.display.flip()
 
 
