@@ -14,8 +14,9 @@ SCREEN_SIZE = (900, 600)
 
 CELL_WIDTH = 200
 CELL_HEIGHT = 200
-TITLE = "华容道 v0.1"
+TITLE = "图片华容道"
 
+ICON_PATH = './data/icon/1.ico'
 FONT_FILE_PATH_0 = './data/font/zhakukuaile2016.ttf'
 FONT_FILE_PATH_1 = './data/font/simhei.ttf'
 
@@ -528,6 +529,7 @@ def run():
 
     screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption(TITLE)
+    pygame.display.set_icon(pygame.image.load(ICON_PATH))
 
     menu_board = init_board('123456789')
     game_mode = 1
